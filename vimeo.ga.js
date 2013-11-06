@@ -2,13 +2,15 @@
  * vimeo.ga.js | v0.2
  * Copyright (c) 2012 - 2013 Sander Heilbron (http://sanderheilbron.nl)
  * MIT licensed
+ * Added Support for Detecting ga.js or analytics.js to use proper tracking code for each - 11/6/2013 - Robert Waddell (http://mrrobwad.blogspot.com)
  */
  
 $(function() {
     var f = $('iframe'),
         url = f.attr('src').split('?')[0],
         trackProgress = f.data('progress'), // Data attribute to enable progress tracking
-        trackSeeking = f.data('seek'); // Data attribute to enable seek tracking
+        trackSeeking = f.data('seek'), // Data attribute to enable seek tracking
+		gatype = 0; // init the gatype variable
 
     // Listen for messages from the player
     if (window.addEventListener) {
@@ -19,9 +21,20 @@ $(function() {
 
     // Handle messages received from the player
     function onMessageReceived(e) {
-        if (e.origin !== "http://player.vimeo.com" || typeof _gaq === 'undefined') {
-         return;
+        if (e.origin !== "http://player.vimeo.com") {
+			return;
         }
+		
+		if ( typeof(_gaq) != 'undefined' ) {
+			gatype = 1; // ga.js
+		} else if ( typeof(window.ga) != 'undefined' ) {
+			gatype = 2; // analytics.js
+		}
+
+		if (gatype == 0) {
+			return; // Google Analytics not found
+		}
+		
         var data = JSON.parse(e.data);
 
         switch (data.event) {
@@ -35,14 +48,22 @@ $(function() {
 
         case 'seek':
             if (trackSeeking && !videoSeeking) {
-                _gaq.push(['_trackEvent', 'Vimeo', 'Skipped video forward or backward', url, undefined, true]);
+				if ( gatype == 1 ) {
+					_gaq.push(['_trackEvent', 'Vimeo', 'Skipped video forward or backward', url, undefined, true]);
+				} else if ( gatype == 2 ) {
+					ga('send', 'event', 'Vimeo', 'Skipped video forward or backward', url);
+				}
                 videoSeeking = true; // Avoid subsequent seek trackings
             }
             break;
 
         case 'play':
             if (!videoPlayed) {
-                _gaq.push(['_trackEvent', 'Vimeo', 'Started video', url, undefined, true]);             
+				if ( gatype == 1 ) {
+					_gaq.push(['_trackEvent', 'Vimeo', 'Started video', url, undefined, true]);             
+				} else if ( gatype == 2 ) {
+					ga('send', 'event', 'Vimeo', 'Started video', url);
+				}
                 videoPlayed = true; //  Avoid subsequent play trackings
             }
             break;
@@ -53,7 +74,11 @@ $(function() {
 
         case 'finish':
             if (!videoCompleted) {
-                _gaq.push(['_trackEvent', 'Vimeo', 'Completed video', url, undefined, true]);
+				if ( gatype == 1 ) {
+					_gaq.push(['_trackEvent', 'Vimeo', 'Completed video', url, undefined, true]);       
+				} else if ( gatype == 2 ) {
+					ga('send', 'event', 'Vimeo', 'Completed video', url);
+				}
                 videoCompleted = true; // Avoid subsequent finish trackings
             }
             break;
@@ -90,8 +115,12 @@ $(function() {
     
     function onPause() {
      if (timePercentComplete < 99 && !videoPaused) {
-      _gaq.push(['_trackEvent', 'Vimeo', 'Paused video', url, undefined, true]);
-      videoPaused = true; // Avoid subsequent pause trackings
+		if ( gatype == 1 ) {
+			_gaq.push(['_trackEvent', 'Vimeo', 'Paused video', url, undefined, true]);
+		} else if ( gatype == 2 ) {
+			ga('send', 'event', 'Vimeo', 'Paused video', url);
+		}
+		videoPaused = true; // Avoid subsequent pause trackings
       }
      }
 
@@ -121,7 +150,11 @@ $(function() {
         }
         
         if (progress) {
-            _gaq.push(['_trackEvent', 'Vimeo', progress, url, undefined, true]);
+			if ( gatype == 1 ) {
+				_gaq.push(['_trackEvent', 'Vimeo', progress, url, undefined, true]);
+			} else if ( gatype == 2 ) {
+				ga('send', 'event', 'Vimeo', progress, url);
+			}
         }
     }
 
