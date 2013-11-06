@@ -99,7 +99,7 @@ The event trackers do not impact bounce rate of the page which embeds the video.
 Have a bug? Please create an issue here on GitHub!
 
 ## Changelog
-### 0.3 (November 6, 2013) - Robert Waddell, http://mrrobwad.blogspot.com:
+### 0.3 (November 6, 2013):
  * Added support for Universal Analytics (analytics.js)
  * Updated documentation.
 
