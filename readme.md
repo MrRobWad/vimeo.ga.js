@@ -22,7 +22,7 @@ The iframe embeds a Vimeo video player and allows Vimeo to serve an HTML5 player
 
 ## Requirements
 * jQuery 1.4.3 or higher
-* Google Analytics Tracking Code (asynchronous)
+* Google Analytics Tracking Code (asynchronous ga.js or Universal Analytics analytics.js) 
 * The end user must be using a browser that supports the HTML5 postMessage feature. Most modern browsers support postMessage, though Internet Explorer 7 does not support it.
 
 ## Browser Support
@@ -39,12 +39,20 @@ All player events are only tracked once. Restarting the video will not reset the
 	* **Completed video**: when the video reaches 100% completion.
 * Label: URL of embedded video on Vimeo.
 
-#####Example
+#####Example (ga.js)
 ```js
 _gaq.push(['_trackEvent', 'Vimeo', 'Started video', 'http://player.vimeo.com/video/22439234', undefined, true]);
 _gaq.push(['_trackEvent', 'Vimeo', 'Paused video', 'http://player.vimeo.com/video/22439234', undefined, true]);
 _gaq.push(['_trackEvent', 'Vimeo', 'Completed video', 'http://player.vimeo.com/video/22439234', undefined, true]);
 ```
+
+#####Example (analytics.js)
+```js
+ga('send', 'event', 'Vimeo', 'Started video', 'http://player.vimeo.com/video/22439234');
+ga('send', 'event', 'Vimeo', 'Paused video', 'http://player.vimeo.com/video/22439234');
+ga('send', 'event', 'Vimeo', 'Completed video', 'http://player.vimeo.com/video/22439234');
+```
+
 ### Progress event trackers
 
 * Category: Vimeo
@@ -54,21 +62,34 @@ _gaq.push(['_trackEvent', 'Vimeo', 'Completed video', 'http://player.vimeo.com/v
 	* **75% Progress**: when the video reaches 75% of the total video time.
 * Label: URL of embedded video on Vimeo.
 
-#####Example
+#####Example (ga.js)
 ```js
 _gaq.push(['_trackEvent', 'Vimeo', 'Played video: 25%', 'http://player.vimeo.com/video/22439234', undefined, true]);
 _gaq.push(['_trackEvent', 'Vimeo', 'Played video: 50%', 'http://player.vimeo.com/video/22439234', undefined, true]);
 _gaq.push(['_trackEvent', 'Vimeo', 'Played video: 75%', 'http://player.vimeo.com/video/22439234', undefined, true]);
 ```
+
+#####Example (analytics.js)
+```js
+ga('send', 'event', 'Vimeo', 'Played video: 25%', 'http://player.vimeo.com/video/22439234');
+ga('send', 'event', 'Vimeo', 'Played video: 50%', 'http://player.vimeo.com/video/22439234');
+ga('send', 'event', 'Vimeo', 'Played video: 75%', 'http://player.vimeo.com/video/22439234');
+```
+
 ### Seek event tracker
 * Category: Vimeo
 * Action:
 	* **Skipped video**: when the video is skipped forward or backward.
 * Label: URL of embedded video on Vimeo.
 
-#####Example
+#####Example (ga.js)
 ```js
 _gaq.push(['_trackEvent', 'Vimeo', 'Skipped video forward or backward', 'http://player.vimeo.com/video/22439234', undefined, true]);
+```
+
+#####Example (analytics.js)
+```js
+ga('send', 'event', 'Vimeo', 'Skipped video forward or backward', 'http://player.vimeo.com/video/22439234');
 ```
 
 ### Bounce rate
@@ -78,6 +99,10 @@ The event trackers do not impact bounce rate of the page which embeds the video.
 Have a bug? Please create an issue here on GitHub!
 
 ## Changelog
+### 0.3 (November 6, 2013) - Robert Waddell, http://mrrobwad.blogspot.com:
+ * Added support for Universal Analytics (analytics.js)
+ * Updated documentation.
+
 ### 0.2 (February 3, 2013):
  * Code cleanup.
  * Fixed a bug in pause event tracking.
