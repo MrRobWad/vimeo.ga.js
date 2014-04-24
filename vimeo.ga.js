@@ -6,6 +6,7 @@
  */
  
 $(function() {
+if ($('iframe').length) {
     var f = $('iframe'),
         url = f.attr('src').split('?')[0],
         trackProgress = f.data('progress'), // Data attribute to enable progress tracking
@@ -157,5 +158,5 @@ $(function() {
 			}
         }
     }
-
+}
 });
