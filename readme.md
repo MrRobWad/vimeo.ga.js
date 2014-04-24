@@ -99,6 +99,9 @@ The event trackers do not impact bounce rate of the page which embeds the video.
 Have a bug? Please create an issue here on GitHub!
 
 ## Changelog
+### 0.4 (April 24, 2014):
+ * Code now checks if iframe is present before running. This prevents JS error on pages with no iframe.
+
 ### 0.3 (November 6, 2013):
  * Added support for Universal Analytics (analytics.js)
  * Updated documentation.
